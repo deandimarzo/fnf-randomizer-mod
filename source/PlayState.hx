@@ -127,6 +127,10 @@ class PlayState extends MusicBeatState
 	public static var storyDifficulty:Int = 1;
 
 	public var vocals:FlxSound;
+    
+    public var dadVocals:FlxSound;
+    public var bfVocals:FlxSound;
+    
 
 	public var dad:Character;
 	public var gf:Character;
@@ -1769,12 +1773,15 @@ class PlayState extends MusicBeatState
 
 		FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 1, false);
 		FlxG.sound.music.onComplete = finishSong;
-		vocals.play();
-
+		// vocals.play();
+        dadVocals.play();
+        bfVocals.play();
+        
 		if(paused) {
 			//trace('Oopsie doopsie! Paused sound');
 			FlxG.sound.music.pause();
-			vocals.pause();
+			dadVocals.pause();
+            bfVocals.pause();
 		}
 
 		// Song duration in a float, useful for the time left feature
@@ -1812,11 +1819,21 @@ class PlayState extends MusicBeatState
 		curSong = songData.song;
 
 		if (SONG.needsVoices)
-			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
+        {
+            
+			dadVocals = new FlxSound().loadEmbedded(Paths.voiceChar(PlayState.SONG.song, "spooky", "0"));
+            bfVocals = new FlxSound().loadEmbedded(Paths.voiceChar(PlayState.SONG.song, "dad", "1"));
+            
+            vocals = new FlxSound();
+        }
 		else
-			vocals = new FlxSound();
-
-		FlxG.sound.list.add(vocals);
+        {
+            vocals = new FlxSound();
+            dadVocals = new FlxSound();
+			bfVocals = new FlxSound();
+        }
+		FlxG.sound.list.add(dadVocals);
+        FlxG.sound.list.add(bfVocals);
 		FlxG.sound.list.add(new FlxSound().loadEmbedded(Paths.inst(PlayState.SONG.song)));
 
 		notes = new FlxTypedGroup<Note>();
@@ -2049,7 +2066,8 @@ class PlayState extends MusicBeatState
 			if (FlxG.sound.music != null)
 			{
 				FlxG.sound.music.pause();
-				vocals.pause();
+				dadVocals.pause();
+                bfVocals.pause();
 			}
 
 			if (!startTimer.finished)
@@ -2173,12 +2191,16 @@ class PlayState extends MusicBeatState
 	{
 		if(finishTimer != null) return;
 
-		vocals.pause();
+		dadVocals.pause();
+        bfVocals.pause();
 
 		FlxG.sound.music.play();
 		Conductor.songPosition = FlxG.sound.music.time;
-		vocals.time = Conductor.songPosition;
-		vocals.play();
+		dadVocals.time = Conductor.songPosition;
+        bfVocals.time = Conductor.songPosition;
+		
+        dadVocals.play();
+        bfVocals.play();
 	}
 
 	public var paused:Bool = false;
@@ -2352,7 +2374,8 @@ class PlayState extends MusicBeatState
 				else {*/
 				if(FlxG.sound.music != null) {
 					FlxG.sound.music.pause();
-					vocals.pause();
+					dadVocals.pause();
+                    bfVocals.pause();
 				}
 				openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 				//}
@@ -2663,7 +2686,8 @@ class PlayState extends MusicBeatState
 			}
 			if(FlxG.keys.justPressed.TWO) { //Go 10 seconds into the future :O
 				FlxG.sound.music.pause();
-				vocals.pause();
+				dadVocals.pause();
+                bfVocals.pause();
 				Conductor.songPosition += 10000;
 				notes.forEachAlive(function(daNote:Note)
 				{
@@ -2693,8 +2717,10 @@ class PlayState extends MusicBeatState
 				FlxG.sound.music.time = Conductor.songPosition;
 				FlxG.sound.music.play();
 
-				vocals.time = Conductor.songPosition;
-				vocals.play();
+				dadVocals.time = Conductor.songPosition;
+                bfVocals.time = Conductor.songPosition;
+				dadVocals.play();
+                bfVocals.play();
 			}
 		}
 		#end
@@ -2734,7 +2760,8 @@ class PlayState extends MusicBeatState
 
 				paused = true;
 
-				vocals.stop();
+				dadVocals.stop();
+                bfVocals.stop();
 				FlxG.sound.music.stop();
 
 				persistentUpdate = false;

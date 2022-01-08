@@ -207,6 +207,15 @@ class Paths
 		var voices = returnSound('songs', songKey);
 		return voices;
 	}
+    
+    inline static public function voiceChar(song:String, songCharacter:String, songPart:String):Any
+	{
+		var songKey:String = '${song.toLowerCase().replace(' ', '-')}/Voices-'+songCharacter+'-'+songPart;
+		var voices = returnSound('songs', songKey);
+		return voices;
+	}
+    
+    
 
 	inline static public function inst(song:String):Any
 	{
